@@ -14,6 +14,7 @@
 package types
 
 import (
+	"fmt"
 	"reflect"
 	"sort"
 	"strconv"
@@ -366,6 +367,7 @@ func TestAlertSliceSort(t *testing.T) {
 	}
 }
 
+// run this with /usr/bin/go test -v -timeout 30s github.com/prometheus/alertmanager/types -run '^(TestAlertSliceSort2)$'
 func TestAlertSliceSort2(t *testing.T) {
 	var (
 		ga10 = &Alert{
@@ -547,8 +549,8 @@ func TestAlertSliceSort2(t *testing.T) {
 			Alert: model.Alert{
 				Labels: model.LabelSet{
 					"alarmSeverity": "3",
-					"alarmType":     "3",
 					"alertname":     "LoRaRadioOFF",
+					"alarmType":     "3",
 					"gatewayUUID":   "000000000800000a",
 					"gatewayType":   "Tracknet TabsHub, 863-870MHz",
 					"job":           "omserver",
@@ -588,9 +590,12 @@ func TestAlertSliceSort2(t *testing.T) {
 			alerts: AlertSlice{bcl8b, bcl7dT2, bcl8dT7, bcl8a, bcl9cT2, lro8bT2, ga11, nkn8dT7, nkn9cT2, nkn7dT2, nkn8a, bcl8cT7, ga12, ga10, nkn8cT7, lro8a},
 			exp:    AlertSlice{ga10, ga11, ga12, bcl8a, bcl8b, nkn8a, bcl7dT2, bcl8cT7, bcl8dT7, bcl9cT2, nkn7dT2, nkn8cT7, nkn8dT7, nkn9cT2, lro8a, lro8bT2},
 		}}
-
 	for _, tc := range cases {
 		sort.Stable(tc.alerts)
+		for _, al := range tc.alerts {
+			// todo iterate on map
+			fmt.Printf("%v %v\n", len(al.Labels), al.Labels)
+		}
 		if !reflect.DeepEqual(tc.alerts, tc.exp) {
 			t.Fatalf("expected %v but got %v", tc.exp, tc.alerts)
 		}
