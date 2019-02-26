@@ -356,8 +356,238 @@ func TestAlertSliceSort(t *testing.T) {
 		{
 			alerts: AlertSlice{a5, a4},
 			exp:    AlertSlice{a4, a5},
-		},
+		}}
+
+	for _, tc := range cases {
+		sort.Stable(tc.alerts)
+		if !reflect.DeepEqual(tc.alerts, tc.exp) {
+			t.Fatalf("expected %v but got %v", tc.exp, tc.alerts)
+		}
 	}
+}
+
+func TestAlertSliceSort2(t *testing.T) {
+	var (
+		ga10 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType": "300",
+					"alertname": "ServerNotResponding",
+					"job":       "netserver",
+					"instance":  "127.0.0.1:2119",
+					"system":    "server",
+				},
+			},
+		}
+		ga11 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType": "300",
+					"alertname": "ServerNotResponding",
+					"job":       "netserver",
+					"instance":  "127.0.0.2:2119",
+					"system":    "server",
+				},
+			},
+		}
+		ga12 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType": "300",
+					"alertname": "ServerNotResponding",
+					"job":       "omserver",
+					"instance":  "127.0.0.1:1796",
+					"system":    "server",
+				},
+			},
+		}
+
+		bcl8a = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "100",
+					"alertname":   "BackhaulConnectionLost",
+					"gatewayUUID": "000000000800000a",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "udp",
+				},
+			},
+		}
+		bcl8b = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "100",
+					"alertname":   "BackhaulConnectionLost",
+					"gatewayUUID": "000000000800000b",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "udp",
+				},
+			},
+		}
+		nkn8a = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "103",
+					"alertname":   "NetServerKeepAliveNotFunctional",
+					"gatewayUUID": "000000000800000a",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "nsdl",
+				},
+			},
+		}
+		bcl7dT2 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "100",
+					"alertname":   "BackhaulConnectionLost",
+					"gatewayUUID": "000000000700000d",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "udp",
+					"tenantid":    "2-7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+		bcl8cT7 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "100",
+					"alertname":   "BackhaulConnectionLost",
+					"gatewayUUID": "000000000800000c",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "udp",
+					"tenantid":    "7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+		bcl8dT7 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "100",
+					"alertname":   "BackhaulConnectionLost",
+					"gatewayUUID": "000000000800000d",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "udp",
+					"tenantid":    "7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+		bcl9cT2 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "100",
+					"alertname":   "BackhaulConnectionLost",
+					"gatewayUUID": "000000000900000c",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "udp",
+					"tenantid":    "2-7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+		nkn7dT2 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "103",
+					"alertname":   "NetServerKeepAliveNotFunctional",
+					"gatewayUUID": "000000000700000d",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "nsdl",
+					"tenantid":    "2-7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+		nkn8cT7 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "103",
+					"alertname":   "NetServerKeepAliveNotFunctional",
+					"gatewayUUID": "000000000800000c",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "nsdl",
+					"tenantid":    "7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+		nkn8dT7 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "103",
+					"alertname":   "NetServerKeepAliveNotFunctional",
+					"gatewayUUID": "000000000800000d",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "nsdl",
+					"tenantid":    "7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+		nkn9cT2 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmType":   "103",
+					"alertname":   "NetServerKeepAliveNotFunctional",
+					"gatewayUUID": "000000000900000c",
+					"job":         "omserver",
+					"system":      "gateway",
+					"type":        "nsdl",
+					"tenantid":    "2-7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+
+		lro8a = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmSeverity": "3",
+					"alarmType":     "3",
+					"alertname":     "LoRaRadioOFF",
+					"gatewayUUID":   "000000000800000a",
+					"gatewayType":   "Tracknet TabsHub, 863-870MHz",
+					"job":           "omserver",
+					"system":        "gateway",
+					"type":          "udp",
+				},
+			},
+		}
+
+		lro8bT2 = &Alert{
+			Alert: model.Alert{
+				Labels: model.LabelSet{
+					"alarmSeverity": "3",
+					"alertname":     "LoRaRadioOFF",
+					"alarmType":     "102",
+					"description":   "LoRa radio is OFF",
+					"entity":        "GTW",
+					"gatewayType":   "Tracknet TabsHub, 863-870MHz",
+					"gatewayUUID":   "000000000800000b",
+					"job":           "omserver",
+					"message":       "LoRa radio is OFF",
+					"tenantid":      "2-7cc1e424-048c-4ec3-a3cf-a37b6305af07",
+				},
+			},
+		}
+	)
+
+	_ = bcl9cT2
+	_ = bcl7dT2
+	_ = nkn9cT2
+	_ = nkn7dT2
+	cases := []struct {
+		alerts AlertSlice
+		exp    AlertSlice
+	}{
+		{
+			alerts: AlertSlice{bcl8b, bcl7dT2, bcl8dT7, bcl8a, bcl9cT2, lro8bT2, ga11, nkn8dT7, nkn9cT2, nkn7dT2, nkn8a, bcl8cT7, ga12, ga10, nkn8cT7, lro8a},
+			exp:    AlertSlice{ga10, ga11, ga12, bcl8a, bcl8b, nkn8a, bcl7dT2, bcl8cT7, bcl8dT7, bcl9cT2, nkn7dT2, nkn8cT7, nkn8dT7, nkn9cT2, lro8a, lro8bT2},
+		}}
 
 	for _, tc := range cases {
 		sort.Stable(tc.alerts)
